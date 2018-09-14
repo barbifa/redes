@@ -15,7 +15,7 @@ int main(int argc , char *argv[])
     char buffer[1024];
     char bufferLeitura[atoi(tam_buffer)];
     FILE *fp;
-    fp = fopen("teste.txt","r");
+
 
     struct sockaddr_in server,client;
     int addrlen = sizeof(server);
@@ -68,12 +68,23 @@ int main(int argc , char *argv[])
         exit(EXIT_FAILURE);
     }
 
-    strcpy(buffer, "Ola Cliente !\n\0");
+    /*strcpy(buffer, "Ola Cliente !\n\0");
     if (send(client_fd,buffer, strlen(buffer), 0))
     {
         printf("Cliente conectado... Esperando por arquivo\n");
+    }*/
+    int message_len;
+    if((message_len = recv(client_fd, bufferLeitura, atoi(tam_buffer), 0)) > 0)
+    {
+        bufferLeitura[message_len] = '\0';
+        printf("Nome do arquivo %s\n", bufferLeitura);
+        send(client_fd, "yep\n", 4, 0);
     }
 
+
+    fp = fopen(bufferLeitura,"r");
+
+    memset(bufferLeitura, 0x0, atoi(tam_buffer));
     if (fp == NULL)
    {
         printf("Erro na abertura do arquivo");
