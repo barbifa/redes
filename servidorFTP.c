@@ -13,26 +13,12 @@ int main(int argc , char *argv[])
    int server_fd,new_socket, valread;
    int opt = 1;
    char buffer[1024];
+   char bufferLeitura[atoi(tam_buffer)];
    char *hello = "Hello from server";
    FILE *fp;
    fp = fopen("teste.txt","r");
-   if (fp == NULL)
-   {
-        printf("Erro na abertura do arquivo");
-        //fechar conexao do servidor
-   }
-   else
-   {
-        while(fread(buffer,atoi(tam_buffer),1,fp)!=0)
-        {
-            printf(buffer);
-        }
 
-   }
-
-
-
-   struct sockaddr_in address;
+    struct sockaddr_in address;
     int addrlen = sizeof(address);
 
     // Creating socket file descriptor
@@ -69,10 +55,29 @@ int main(int argc , char *argv[])
         perror("accept");
         exit(EXIT_FAILURE);
     }
+
     valread = read( new_socket , buffer, 1024);
-    printf("%s\n",buffer );
-    send(new_socket , hello , strlen(hello) , 0 );
-    printf("Hello message sent\n");
+    if (fp == NULL)
+   {
+        printf("Erro na abertura do arquivo");
+        //fechar conexao do servidor
+   }
+   else
+   {
+         while(fscanf(fp,"%s",bufferLeitura) != EOF)
+        {
+            printf(&bufferLeitura)  ;
+            send(new_socket , bufferLeitura ,atoi(tam_buffer), 0 );
+            printf("Hello message sent\n");
+            //envia o buffer lido
+        }
+
+   }
+   fclose(fp);
+
+    //printf("%s\n",buffer );
+    //send(new_socket , hello , strlen(hello) , 0 );
+
     return 0;
 
 }
